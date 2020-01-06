@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from builtins import object
 import socket
 import requests
 
@@ -70,7 +71,7 @@ class Mediathek(object):
             return content.text
 
     def buildMenu(self, path, treeNode=None):
-        if isinstance(path, (str, unicode)):
+        if isinstance(path, (str, str)):
             path = path.split('.')
         if len(path) > 0:
             index = int(path.pop(0))

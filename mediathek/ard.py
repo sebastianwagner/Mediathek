@@ -15,11 +15,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from future import standard_library
+standard_library.install_aliases()
 import base64
 import json
 import re
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from mediathek import *
 
@@ -84,10 +86,11 @@ class ARDMediathek(Mediathek):
         return date
 
     @classmethod
-    def name(self):
+    def name(cls):
         return "ARD"
 
-    def isSearchable(self):
+    @classmethod
+    def isSearchable(cls):
         return False
 
     def extractJsonFromPage(self, link):
@@ -134,8 +137,8 @@ class ARDMediathek(Mediathek):
         pageSize = paginationContent["pageSize"]
         pageNumber = paginationContent["pageNumber"]
 
-        variables = urllib.quote_plus(self.variables % (widgetId, client, pageNumber, pageSize))
-        extension = urllib.quote_plus(self.extension)
+        variables = urllib.parse.quote_plus(self.variables % (widgetId, client, pageNumber, pageSize))
+        extension = urllib.parse.quote_plus(self.extension)
         return self.publicGateway % (variables, extension)
 
     def buildJsonMenu(self, path, callhash, initCount):

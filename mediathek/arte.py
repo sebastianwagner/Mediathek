@@ -15,8 +15,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from builtins import str
 import json
 import re
+import time
 
 from bs4 import BeautifulSoup
 
@@ -42,11 +44,11 @@ month_replacements = {
 class ARTEMediathek(Mediathek):
 
     @classmethod
-    def name(self):
+    def name(cls):
         return "ARTE"
 
     @classmethod
-    def isSearchable(self):
+    def isSearchable(cls):
         return True
 
     def __init__(self, simpleXbmcGui):
@@ -151,7 +153,7 @@ class ARTEMediathek(Mediathek):
         for zone in jsonContent["pages"]["list"]["HOME_de_{}"]["zones"]:
             if zone["link"] and "title" in zone:
                 title = zone["title"]
-                if isinstance(title, unicode):
+                if isinstance(title, str):
                     title = title.encode('utf8')
                 self.buildJsonLink(title, zone)
 
@@ -169,13 +171,13 @@ class ARTEMediathek(Mediathek):
         self.gui.buildVideoLink(DisplayObject(title, subTitle, "", "", link, False, None), self, 0)
 
     def buildVideoEntry(self, jsonObject):
-        title = unicode(jsonObject["title"])
+        title = str(jsonObject["title"])
         if jsonObject["subtitle"] is not None:
-            subTitle = unicode(jsonObject["subtitle"])
+            subTitle = str(jsonObject["subtitle"])
         else:
             subTitle = None
         if "teaser" in jsonObject:
-            detail = unicode(jsonObject["teaser"])
+            detail = str(jsonObject["teaser"])
         else:
             detail = ""
 

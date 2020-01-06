@@ -15,11 +15,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 import os
 import re
 import sys
 import time
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -52,7 +56,7 @@ class SimpleXbmcGui(object):
             os.mkdir(self.plugin_profile_dir)
 
     def log(self, msg):
-        if not isinstance(msg, (str, unicode)):
+        if not isinstance(msg, (str, str)):
             xbmc.log("[%s]: %s" % (__plugin__, type(msg)))
         else:
             xbmc.log("[%s]: %s" % (__plugin__, msg.encode('utf8')))
@@ -69,12 +73,12 @@ class SimpleXbmcGui(object):
         if displayObject.isPlayable:
             if displayObject.isPlayable == "PlayList":
                 link = displayObject.link[0]
-                url = "%s?type=%s&action=openPlayList&link=%s" % (sys.argv[0], mediathek.name(), urllib.quote_plus(link.basePath))
+                url = "%s?type=%s&action=openPlayList&link=%s" % (sys.argv[0], mediathek.name(), urllib.parse.quote_plus(link.basePath))
                 listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, listItem, False, objectCount)
             elif displayObject.isPlayable == "JsonLink":
                 link = displayObject.link
-                url = "%s?type=%s&action=openJsonLink&link=%s" % (sys.argv[0], mediathek.name(), urllib.quote_plus(link))
+                url = "%s?type=%s&action=openJsonLink&link=%s" % (sys.argv[0], mediathek.name(), urllib.parse.quote_plus(link))
                 listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, listItem, False, objectCount)
             else:
@@ -85,11 +89,11 @@ class SimpleXbmcGui(object):
                 listItem.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(int(sys.argv[1]), link.basePath, listItem, False, objectCount)
         else:
-            listItem.setIsFolder(True)
+            #listItem.setIsFolder(True) #not for >= leia only
             try:
-                url = "%s?type=%s&action=openTopicPage&link=%s" % (sys.argv[0], mediathek.name(), urllib.quote_plus(displayObject.link))
+                url = "%s?type=%s&action=openTopicPage&link=%s" % (sys.argv[0], mediathek.name(), urllib.parse.quote_plus(displayObject.link))
             except:
-                url = "%s?type=%s&action=openTopicPage&link=%s" % (sys.argv[0], mediathek.name(), urllib.quote_plus(displayObject.link.encode('utf-8')))
+                url = "%s?type=%s&action=openTopicPage&link=%s" % (sys.argv[0], mediathek.name(), urllib.parse.quote_plus(displayObject.link.encode('utf-8')))
             xbmcplugin.addDirectoryItem(int(sys.argv[1]), url, listItem, True, objectCount)
 
     def BuildMetaData(self, displayObject):
@@ -180,7 +184,7 @@ class SimpleXbmcGui(object):
     def readText(self, node, textNode):
         try:
             node = node.getElementsByTagName(textNode)[0].firstChild
-            return unicode(node.data)
+            return str(node.data)
         except:
             return ""
 

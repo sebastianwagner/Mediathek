@@ -16,9 +16,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>. 
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 import os
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import xbmc
 import xbmcaddon
 from simplexbmc import SimpleXbmcGui
@@ -65,7 +68,7 @@ if mediathekName == "":
     else:
         result = gui.keyboardInput()
         if result.isConfirmed():
-            searchText = unicode(result.getText().decode('UTF-8'))
+            searchText = str(result.getText().decode('UTF-8'))
             for name in factory.getAvaibleMediathekTypes():
                 mediathek = factory.getMediathek(name, gui)
                 if mediathek.isSearchable():
@@ -78,11 +81,11 @@ else:
     mediathek = factory.getMediathek(mediathekName, gui)
 
     if action == "openTopicPage":
-        link = urllib.unquote_plus(params.get("link", "")).decode('UTF-8')
+        link = urllib.parse.unquote_plus(params.get("link", "")).decode('UTF-8')
         gui.log(link)
         mediathek.buildPageMenu(link, 0)
     elif action == "openPlayList":
-        link = urllib.unquote_plus(params.get("link", ""))
+        link = urllib.parse.unquote_plus(params.get("link", ""))
         gui.log(link)
         remotePlaylist = mediathek.loadPage(link)
         gui.playPlaylist(remotePlaylist)
@@ -92,7 +95,7 @@ else:
     elif action == "search":
         result = gui.keyboardInput()
         if result.isConfirmed():
-            searchText = unicode(result.getText().decode('UTF-8'))
+            searchText = str(result.getText().decode('UTF-8'))
             mediathek.searchVideo(searchText)
         else:
             gui.back()
@@ -101,7 +104,7 @@ else:
         callhash = params.get("callhash", "0")
         mediathek.buildJsonMenu(path, callhash, 0)
     elif action == "openJsonLink":
-        link = urllib.unquote_plus(params.get("link", ""))
+        link = urllib.parse.unquote_plus(params.get("link", ""))
         mediathek.playVideoFromJsonLink(link)
     else:
         if mediathek.isSearchable():

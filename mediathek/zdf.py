@@ -63,9 +63,10 @@ class ZDFMediathek(Mediathek):
         )
 
     @classmethod
-    def name(self):
+    def name(cls):
         return "ZDF"
 
+    @classmethod
     def isSearchable(self):
         return True
 

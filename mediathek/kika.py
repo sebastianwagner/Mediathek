@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from builtins import str
 import re
 import time
 
@@ -75,7 +76,7 @@ class KIKA(Mediathek):
         self.regex_videoLink = re.compile("rtmp://.*?\.mp4")
 
     @classmethod
-    def name(self):
+    def name(cls):
         return "KI.KA"
 
     @classmethod
@@ -83,15 +84,15 @@ class KIKA(Mediathek):
         return False
 
     @classmethod
-    def searchVideo(self, searchText):
+    def searchVideo(cls, searchText):
         return
 
     def buildVideoLink(self, pageLink):
         xmlPage = self.loadPage(self.rootLink + pageLink)
         channel = self.regex_xml_channel.search(xmlPage)
         if channel is not None:
-            channel = unicode(channel.group(1), "UTF-8")
-        title = unicode(self.regex_xml_title.search(xmlPage).group(1), "UTF-8")
+            channel = str(channel.group(1), "UTF-8")
+        title = str(self.regex_xml_title.search(xmlPage).group(1), "UTF-8")
         image = self.regex_xml_image.search(xmlPage).group(1).replace("**aspectRatio**", "tlarge169").replace("**width**", "1472")
 
         self.gui.log("%s %s" % (title, image))
@@ -109,7 +110,7 @@ class KIKA(Mediathek):
             if "MP4 Web XL" in profile:
                 links[3] = SimpleLink(directLink, 0)
 
-        date = time.strptime(unicode(self.regex_xml_time.search(xmlPage).group(1), "UTF-8"), u"%d.%m.%Y %H:%M")
+        date = time.strptime(str(self.regex_xml_time.search(xmlPage).group(1), "UTF-8"), u"%d.%m.%Y %H:%M")
         if channel is not None:
             return DisplayObject(channel, title, image, "", links, True, date)
         else:

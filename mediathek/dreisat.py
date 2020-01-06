@@ -15,6 +15,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+from builtins import str
 import json
 import re
 import time
@@ -41,10 +42,11 @@ month_replacements = {
 
 class DreiSatMediathek(Mediathek):
     @classmethod
-    def name(self):
+    def name(cls):
         return "3Sat"
 
-    def isSearchable(self):
+    @classmethod
+    def isSearchable(cls):
         return True
 
     def __init__(self, simpleXbmcGui):
@@ -128,8 +130,8 @@ class DreiSatMediathek(Mediathek):
         videoNode = xmlPage.getElementsByTagName("video")[0]
         informationNode = xmlPage.getElementsByTagName("information")[0]
         detailsNode = xmlPage.getElementsByTagName("details")[0]
-        title = unicode(self.readText(informationNode, "title"))
-        description = unicode(self.readText(informationNode, "detail"))
+        title = str(self.readText(informationNode, "title"))
+        description = str(self.readText(informationNode, "detail"))
         basename = self.readText(detailsNode, "basename")
         length = self.readText(detailsNode, "lengthSec")
         date = self.parseDate(self.readText(detailsNode, "airtime"))
@@ -183,7 +185,7 @@ class DreiSatMediathek(Mediathek):
     def readText(self, node, textNode):
         try:
             node = node.getElementsByTagName(textNode)[0].firstChild
-            return unicode(node.data)
+            return str(node.data)
         except:
             return ""
 
@@ -213,7 +215,7 @@ class DreiSatMediathek(Mediathek):
         dateString = self.readText(itemNode, "pubDate")
         pubDate = self.parseDate(dateString)
         descriptionNode = itemNode.getElementsByTagName("description")[0].firstChild.data
-        description = unicode(descriptionNode)
+        description = str(descriptionNode)
         picture = ""
         pictureNodes = itemNode.getElementsByTagName("media:thumbnail")
         if len(pictureNodes) > 0:
